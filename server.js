@@ -42,12 +42,12 @@ app.post("/login", (req, res) => {
     return res.status(400).send("Invalid request body");
   }
 
-  // Reject requests with additional fields
-  const allowedFields = ["userHandle", "password"];
-  const hasInvalidFields = Object.keys(req.body).some(
-    (key) => !allowedFields.includes(key)
+
+  const mandatory_values = ["userHandle", "password"];
+  const chek_values = Object.keys(req.body).some(
+    (key) => !mandatory_values.includes(key)
   );
-  if (hasInvalidFields) {
+  if (chek_values) {
     return res.status(400).send("Request contains invalid fields");
   }
 
@@ -57,11 +57,10 @@ app.post("/login", (req, res) => {
   );
 
   if (user) {
-    const token = jwt.sign({ userHandle: user.userHandle }, secretKey, {
-      expiresIn: "1h", // Token expires in 1 hour
-    });
-    console.log("Token generated:", token); // Debugging line
-    return res.status(200).json({ jsonWebToken: token }); // Return 200 OK with token
+    const token = jwt.sign({ userHandle: user.userHandle }, secretKey
+    );
+    console.log("Token generated:", token); 
+    return res.status(200).json({ jsonWebToken: token }); 
   }
 
   return res.status(401).send("Unauthorized: Incorrect username or password");
@@ -78,11 +77,11 @@ function verifyToken(req, res, next) {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, secretKey);
-    console.log("Token verified:", decoded); // Debugging line
-    req.user = decoded; // Attach decoded user info to the request
+    console.log("Token verified:", decoded); 
+    req.user = decoded; 
     next();
   } catch (err) {
-    console.log("Token verification failed:", err); // Debugging line
+    console.log("Token verification failed:", err); 
     return res.status(401).send("Unauthorized, JWT token is invalid");
   }
 }
@@ -100,7 +99,7 @@ function verifyToken(req, res, next) {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, secretKey);
-    req.user = decoded; // Attach decoded user info to the request
+    req.user = decoded; 
     next();
   } catch (err) {
     return res.status(401).send("Unauthorized, JWT token is invalid");
@@ -111,7 +110,6 @@ const highScores = []
 app.post("/high-scores", verifyToken, (req, res) => {
   const { level, userHandle, score, timestamp } = req.body;
 
-  // Validate request body
   if (
     !level ||
     !userHandle ||
@@ -144,20 +142,19 @@ app.get("/high-scores", (req, res) => {
     return res.status(400).send("Invalid or missing 'level' query parameter");
   }
 
-  // Filter high scores by level
+ 
   const filteredScores = highScores.filter((score) => score.level === level);
 
-  // Sort high scores from biggest to smallest
+
   const sortedScores = filteredScores.sort((a, b) => b.score - a.score);
 
-  // Implement pagination (default page size: 20)
-  const pageSize = 20;
-  const pageNumber = parseInt(page, 10) || 1; // Default to page 1 if not provided
-  const startIndex = (pageNumber - 1) * pageSize;
-  const paginatedScores = sortedScores.slice(startIndex, startIndex + pageSize);
+  const page_number = 20;
+  const pageNumber = parseInt(page, 10) || 1; 
+  const startIndex = (pageNumber - 1) * page_number;
+  const finalscores = sortedScores.slice(startIndex, startIndex + page_number);
 
   // Return paginated scores
-  return res.status(200).json(paginatedScores);
+  return res.status(200).json(finalscores);
 });
 
 
