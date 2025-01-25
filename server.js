@@ -66,25 +66,6 @@ app.post("/login", (req, res) => {
   return res.status(401).send("Unauthorized: Incorrect username or password");
 });
 
-// // JWT verification middleware
-// function verifyToken(req, res, next) {
-//   const authHeader = req.headers.authorization;
-
-//   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-//     return res.status(401).send("Unauthorized, JWT token is missing");
-//   }
-
-//   const token = authHeader.split(" ")[1];
-//   try {
-//     const decoded = jwt.verify(token, secretKey);
-//     console.log("Token verified:", decoded); 
-//     req.user = decoded; 
-//     next();
-//   } catch (err) {
-//     console.log("Token verification failed:", err); 
-//     return res.status(401).send("Unauthorized, JWT token is invalid");
-//   }
-// }
 
 
 
