@@ -11,7 +11,7 @@ const users = [];
 app.post("/signup", (req, res) => {
   const { userHandle, password } = req.body;
 
-  // Validate required fields and length
+
   if (
     typeof userHandle === "string" &&
     typeof password === "string" &&
@@ -88,7 +88,7 @@ function verifyToken(req, res, next) {
 
 
 
-// JWT verification middleware
+// verification 
 function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
 
@@ -106,6 +106,7 @@ function verifyToken(req, res, next) {
   }
 }
 const highScores = []
+
 // POST: High Scores Endpoint
 app.post("/high-scores", verifyToken, (req, res) => {
   const { level, userHandle, score, timestamp } = req.body;
@@ -123,8 +124,6 @@ app.post("/high-scores", verifyToken, (req, res) => {
     return res.status(400).send("Invalid request body");
   }
 
-  // Simulate high score submission (e.g., save to a database here)
-  console.log("High score submitted:", { level, userHandle, score, timestamp });
 
   const highScore_data = { level, userHandle, score, timestamp };
   highScores.push(highScore_data);
@@ -137,7 +136,7 @@ app.post("/high-scores", verifyToken, (req, res) => {
 app.get("/high-scores", (req, res) => {
   const { level, page } = req.query;
 
-  // Validate 'level' query parameter
+
   if (!level || typeof level !== "string") {
     return res.status(400).send("Invalid or missing 'level' query parameter");
   }
@@ -153,7 +152,7 @@ app.get("/high-scores", (req, res) => {
   const startIndex = (pageNumber - 1) * page_number;
   const finalscores = sortedScores.slice(startIndex, startIndex + page_number);
 
-  // Return paginated scores
+
   return res.status(200).json(finalscores);
 });
 
